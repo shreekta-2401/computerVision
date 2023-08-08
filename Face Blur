@@ -1,0 +1,31 @@
+import cv2
+
+
+def blur_faces(image_path, scaleFactor=1.05, minNeighbors=5, output_path='blurred_image.jpg'):
+    # Load the input image
+    image = cv2.imread(image_path)
+
+    # Load a pre-trained face detection classifier
+    face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+
+    # Convert the image to grayscale for face detection
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # Detect faces in the image
+    faces = face_cascade.detectMultiScale(gray, scaleFactor=scaleFactor, minNeighbors=minNeighbors)
+
+    # Apply Gaussian blur to the detected faces
+    for (x, y, w, h) in faces:
+        face_roi = image[y:y + h, x:x + w]
+        blurred_face = cv2.GaussianBlur(face_roi, (99, 99), 30)
+        image[y:y + h, x:x + w] = blurred_face
+
+    # Save the blurred image
+    cv2.imwrite(output_path, image)
+
+
+# Replace 'input_image.jpg' and 'blurred_image.jpg' with your input and output image file paths
+input_image_path = 'C:\Users\lenovo\Pictures\Photos FGI\201012\201012A0\mama.jpg'
+output_image_path = 'C:\Users\lenovo\Pictures\Photos FGI\201012\201012A0\mama2.jpg'
+blur_faces(input_image_path, output_path=output_image_path)
+print(f"Blurred image saved as '{output_image_path}'")
